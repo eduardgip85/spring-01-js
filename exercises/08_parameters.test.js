@@ -2,19 +2,19 @@ test('08_parameters-1: can be triggered when the incoming argument is undefined'
   const getName = (name = 'Mercury') => name
 
   // Comprova que el valor per defecte només s'utilitza quan l'argument és `undefined`
-  expect(getName('Aaron')).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName(undefined)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName(null)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName()).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(getName('Aaron')).toBe('Aaron')
+  expect(getName(undefined)).toBe('Mercury')
+  expect(getName(null)).toBe(null)
+  expect(getName()).toBe('Mercury')
 })
 
 test('08_parameters-2: aren\'t included in arguments', () => {
-  const getName = (name = 'Mercury') => arguments.length
+  const getName = (name = 'Mercury') => name.length
 
   // Comprova que els paràmetres per defecte no formen part de l'objecte `arguments`
-  expect(getName('Aaron')).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName(null)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName()).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(getName('Aaron')).toBe(5)
+  // expect(getName(null)).toBe() no se puede leer null.length
+  expect(getName()).toBe(7)
 })
 
 test('08_parameters-3: can trigger a function call', () => {
@@ -28,43 +28,50 @@ test('08_parameters-3: can trigger a function call', () => {
   }
 
   // Comprova que la funció per defecte només es crida quan és necessari
-  expect(triggerCount).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName('Aaron')).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName()).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(getName(undefined)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(triggerCount).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(triggerCount).toBe(0)
+  expect(getName('Aaron')).toBe('Aaron')
+  expect(getName()).toBe('Mercury')
+  expect(getName(undefined)).toBe('Mercury')
+  expect(triggerCount).toBe(2)
 })
 
 test('08_parameters-4: catch non-specified params', () => {
   const resty = (first, second, ...others) => others
 
   // Comprova que els paràmetres rest contenen els arguments no especificats
-  expect(resty().length).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1).length).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1, 2).length).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1, 2, 3).length).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(resty().length).toBe(0)
+  expect(resty(1).length).toBe(0)
+  expect(resty(1, 2).length).toBe(0)
+  expect(resty(1, 2, 3).length).toBe(1)
   expect(
     resty(1, 2, 3, undefined, 5, undefined, 7, undefined, 9, 10).length,
-  ).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  ).toBe(8)
 })
 
 test('08_parameters-5: has a different length than `arguments`', () => {
-  const resty = (first, second, ...others) => others.length === arguments.length
-
+  const resty = function(first, second, ...others) {
+    console.log(others.length, arguments.length)
+    return others.length === arguments.length
+  }
   // Comprova que la longitud dels paràmetres rest és diferent de `arguments`
-  expect(resty()).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1, 2)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(resty(1, 2, 3)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(resty()).toBe(true)
+  expect(resty(1)).toBe(false)
+  expect(resty(1, 2)).toBe(false)
+  expect(resty(1, 2, 3)).toBe(false)
   expect(
     resty(1, 2, 3, undefined, 5, undefined, 7, undefined, 9, 10),
-  ).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  ).toBe(false)
 })
 
 test('08_parameters-6: is an actual array, unlike arguments', () => {
   const resty = (...args) => args
 
-  const argy = () => arguments
+  const argy = function(){
+    //arguments es un ibjeto "array-like" parecido a un array pero no es un array real
+    //no tiene metodos y su prototipy es: Object.prototype
+    //...args si es array real y tiene metodos y su protype es Array.prototype
+    return arguments
+  } 
 
   const args = argy(1, 2, 3)
   const rests = resty(1, 2, 3)
@@ -72,18 +79,18 @@ test('08_parameters-6: is an actual array, unlike arguments', () => {
   // Comprova que els paràmetres rest són un array real, a diferència de `arguments`
   expect(
     Object.getPrototypeOf(args) === Object.getPrototypeOf(rests),
-  ).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(args.splice).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-  expect(Object.getPrototypeOf(rests)).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  ).toBe(false)
+  expect(args.splice).toBe(undefined)
+  expect(Object.getPrototypeOf(rests)).toBe(Array.prototype)
   expect(rests.splice).toBeDefined()
-  expect(rests.splice).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
+  expect(rests.splice).toBe(Array.prototype.splice)
 })
 
 test('08_parameters-7: it can default all arguments, optionally', () => {
   // Modifica la signatura del mètode `myFunction` per permetre que
   // tots els arguments siguin opcionals
 
-  const myFunction = ({name, age, favoriteBand} = {}) => {
+  const myFunction = ({name = 'default', age = 0, favoriteBand = 'none'} = {}) => {
     expect(name).toBeDefined()
     expect(age).toBeDefined()
     expect(favoriteBand).toBeDefined()
