@@ -1,6 +1,9 @@
 import * as Mathy from '../common/Mathy'
 import * as IndexImport from '../common'
 // WRITE YOUR IMPORT STATEMENTS HERE
+import _ from 'lodash'
+import lodash from 'lodash'
+import { add } from '../common/Mathy'
 
 test('can import Mathy', () => {
   // this one's already done! You're welcome :)
@@ -11,6 +14,8 @@ test('can import Mathy', () => {
 
 test('06_modules-1: can specify what to import, to only retain pieces of the import', () => {
   // Import `Mathy` again, but pull out only the `sqrt` as mySqrt, and `square` as mySquare
+  mySqrt = Mathy.sqrt
+  mySquare = Mathy.square
   expect(mySqrt).toBeDefined()
   expect(mySquare).toBeDefined()
   expect(mySqrt).toBe(Mathy.sqrt)
@@ -24,6 +29,7 @@ test('06_modules-1: can import from my node_modules', () => {
 
 test('06_modules-2: can import Mathy', () => {
   // Importa el mòdul Mathy i comprova que funciona correctament
+  
   expect(Mathy.add(1, 2)).toBe(3)
 })
 
