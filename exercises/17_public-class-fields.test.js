@@ -1,3 +1,5 @@
+import  { jest } from '@jest/globals'
+
 test('17_public-class-fields-1: public class fields help us avoid .bind-ing everything', () => {
   class FakeReactComponent {
     constructor(props) {
