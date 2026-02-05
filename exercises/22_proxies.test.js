@@ -20,7 +20,7 @@ const getCharacter = () => {
 
 test('22_proxies-1: can wrap an existing object', () => {
   const character = getCharacter()
-  const proxy = character
+  const proxy = new Proxy(character, {})
   // Comprova que el proxy no és igual referencialment però sí igual profundament a l'objecte original
   expect(proxy).not.toBe(character) // referencialment diferent
   expect(proxy).toEqual(character) // profundament igual
@@ -29,7 +29,35 @@ test('22_proxies-1: can wrap an existing object', () => {
 test('22_proxies-2: handler can intercept gets, sets, and deletes', () => {
   const character = getCharacter()
 
-  const handler = {}
+  const handler = {
+      get(target, prop) {
+      // Accés profund amb notació de punt: 'classes.1.teacher'
+      if (typeof prop === 'string' && prop.includes('.')) {
+        return prop.split('.').reduce((obj, key) => obj[key], target)
+      }
+      return target[prop]
+    },
+    set(target, prop, value) {
+      // Assignació profunda amb notació de punt
+      if (typeof prop === 'string' && prop.includes('.')) {
+        const keys = prop.split('.')
+        const lastKey = keys.pop()
+        const deepTarget = keys.reduce((obj, key) => obj[key], target)
+        deepTarget[lastKey] = value
+        return true
+      }
+      target[prop] = value
+      return true
+    },
+    deleteProperty(target, prop) {
+      // Protegeix propietats que comencen amb _
+      if (prop.startsWith('_')) {
+        return true
+      }
+      delete target[prop]
+      return true
+    }
+  }
   const proxy = new Proxy(character, handler)
 
   // Interactua amb el proxy
