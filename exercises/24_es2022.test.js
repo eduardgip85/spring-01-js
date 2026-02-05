@@ -2,6 +2,16 @@ test('24_es2022-1: Class fields and private methods', () => {
   // Crea una classe amb un camp privat i un mètode privat. Afegeix un getter per accedir al camp privat.
   class Person {
     // Resol aquí...
+    
+    //privat
+    #secret = 'secret'
+
+    //public
+    static publicField = 'public'
+
+    getSecret(){
+      return this.#secret
+    }
   }
 
   const person = new Person()
@@ -14,8 +24,8 @@ test('24_es2022-2: at() method for indexing arrays and strings', () => {
   const array = [1, 2, 3, 4]
   const string = 'hello'
 
-  const lastArrayElement = null // Resol aquí...
-  const secondLastStringChar = null // Resol aquí...
+  const lastArrayElement = array.at(3) // Resol aquí...
+  const secondLastStringChar = string.at(2) // Resol aquí...
 
   expect(lastArrayElement).toBe(4)
   expect(secondLastStringChar).toBe('l')
@@ -23,7 +33,7 @@ test('24_es2022-2: at() method for indexing arrays and strings', () => {
 
 test('24_es2022-3: Top-level await in modules', async () => {
   // Utilitza await a nivell superior per resoldre una promesa.
-  const result = null // Resol aquí...
+  const result = await Promise.resolve('Top-level await works!') // Resol aquí...
 
   expect(result).toBe('Top-level await works!')
 })
