@@ -6,7 +6,7 @@ test('21_reflect-1: Reflect.apply can be used to call a function', () => {
     },
   }
 
-  const result = null // utilitza Reflect.apply per invocar person.sayHi
+  const result = Reflect.apply(person.sayHi, person, ['Hey there', 'Jaimee']) // utilitza Reflect.apply per invocar person.sayHi
   expect(result).toBe('Hey there Jaimee! My name is Fred')
 })
 
@@ -17,8 +17,10 @@ test('21_reflect-2: Reflect.deleteProperty can be used instead of the `delete` k
     value: 'YOU CANNOT GET RID OF ME!',
   })
   // utilitza Reflect.deleteProperty per eliminar la propietat age de l'objecte person
-  const ageDeleted = delete person.age
-  const protectedDeleted = delete person.protected
+  // const ageDeleted = delete person.age
+  const ageDeleted = Reflect.deleteProperty(person, 'age')
+  // const protectedDeleted = delete person.protected
+  const protectedDeleted = Reflect.deleteProperty(person, 'protected')
   expect(person.age).not.toBeDefined()
   expect(ageDeleted).toBe(true)
   expect(person.protected).toBe('YOU CANNOT GET RID OF ME!')
@@ -43,15 +45,15 @@ test(`21_reflect-3: Reflect.ownKeys returns the object's own (not inherited) key
   // això serà el cas per a la majoria d'entorns, tot i que generalment no és
   // una bona idea confiar en aquest fet, ja que no està especificat a l'especificació.
   expect(Object.keys(kyle)).toEqual([
-    /* INTRODUEIX LA TEVA RESPOSTA AQUÍ */
-  ])
+    'awesome'
+  ]) //nomes strings , nomes enumerable, no inclou symbols ni no-enumerables
   expect(Object.getOwnPropertyNames(kyle)).toEqual([
-    /* INTRODUEIX LA TEVA RESPOSTA AQUÍ */
-  ])
+    'awesome','favoriteLanguage'
+  ]) //nomes strings, inclou enumarables i no-enumerables , no inclou symbol
   expect(Object.getOwnPropertySymbols(kyle)).toEqual([
-    /* INTRODUEIX LA TEVA RESPOSTA AQUÍ */
-  ])
+    favoriteFeature
+  ]) //nomes symbols, inclou enumerables i no-enumerables , no strings
   expect(Reflect.ownKeys(kyle)).toEqual([
-    /* INTRODUEIX LA TEVA RESPOSTA AQUÍ */
-  ])
+    'awesome','favoriteLanguage',favoriteFeature
+  ]) //Totes
 })
